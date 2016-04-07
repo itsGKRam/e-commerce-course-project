@@ -54,10 +54,12 @@ In order to run our web application you will need to do several steps:
 ⋅⋅* edit ```public/js/custom.js``` with your Stripe test public key that can be created [www.stripe.com](https://dashboard.stripe.com/account/apikeys)
 ..* edit ```/routes/main.js``` with your Stripe test secrete key that can be created on [www.stripe.com](https://dashboard.stripe.com/account/apikeys)
 7. from the terminal run "elasticsearch" (OSX users)
+![elasticsearch](https://raw.githubusercontent.com/CristianChris/e-commerce-course-project/master/screenshots/elasticsearch.png)
 8. from the terminal in a new tab from the same location "e-commerce-course-project" run node server.js
+![node](https://raw.githubusercontent.com/CristianChris/e-commerce-course-project/master/screenshots/node.png)
 9. open this URL [http://localhost:3000](http://localhost:3000) from the browser
-
-## User Authentication
+![home](https://raw.githubusercontent.com/CristianChris/e-commerce-course-project/master/screenshots/home.png)
+## User Authentication 
 ---
 
 #### User Schema
@@ -227,6 +229,9 @@ Few steps are required to set up the cookie and session functionality:
 * This method checks the existance of the size of the avatar and the existance of the user’s email
 * If the user doesn’t have the email for any reason, a default gravatar is provided
 * Otherwise, a unique gravatar is created for each user profile based on the md5digest of the user’s email
+* If the user will login using facebook credentials we will import his/her profile picture and from time to time will check if the picture wasn't changed. 
+
+![gravatar-picture](https://raw.githubusercontent.com/CristianChris/e-commerce-course-project/master/screenshots/gravatar_1.png)
 
 ####Edit-profile
 
@@ -235,6 +240,8 @@ Few steps are required to set up the cookie and session functionality:
 * so that it can be used in other routes that have success as the name of the flash as is the route ```router.get(‘/edit-profile’)``` which contains the actual render of the edit-profile.ejs file
 * redirect user back to edit-profile page
 
+![edit-profile](https://raw.githubusercontent.com/CristianChris/e-commerce-course-project/master/screenshots/edit_1.png)
+![edit-profile](https://raw.githubusercontent.com/CristianChris/e-commerce-course-project/master/screenshots/edit_2.png)
 
 
 ## Products and Category functionality
@@ -272,6 +279,8 @@ Now, the routes for adding product category are located in ```admin.js```, becau
 We have created the corresponding ```add-category.ejs``` for the above route.
 
 We've also added a security layer, so that only ```admin``` account can access the page of ```add-category```
+
+![add-category](https://raw.githubusercontent.com/CristianChris/e-commerce-course-project/master/screenshots/add_category_1.png)
 
 
 #### Async waterfall model
@@ -374,6 +383,13 @@ Add plugin to our product schema:
 
 The mapping code maps between product DB and elasticSearch, so that it creates a “bridge” between ES replica set and Product DB. Finally we want to stream the whole data from the product to ES, so that it will replicate all data and put in ES.
 
+![search](https://raw.githubusercontent.com/CristianChris/e-commerce-course-project/master/screenshots/search_1.png)
+![search](https://raw.githubusercontent.com/CristianChris/e-commerce-course-project/master/screenshots/search_2.png)
+![search](https://raw.githubusercontent.com/CristianChris/e-commerce-course-project/master/screenshots/search_3.png)
+![search](https://raw.githubusercontent.com/CristianChris/e-commerce-course-project/master/screenshots/search_4.png)
+![search](https://raw.githubusercontent.com/CristianChris/e-commerce-course-project/master/screenshots/search_5.png)
+
+
 
 
 ## Cart and payment feature
@@ -408,7 +424,9 @@ res.locals.cart = total;
 #### Cart features
 The cart displays the products which have been added to it and consequently, they appear as div frames, following the specification within the ```./views/main/cart.ejs``` view. Each item to be bought may be removed by the user and also may be bought. There is also a frame which links with the payment gateway which is **stripe** in our case.
 
-![Cart feature](https://github.com/mdanny/e-commerce-course-project/blob/master/images/Screen%20Shot%202016-04-06%20at%2011.58.35%20PM.png)
+
+![Cart feature](https://raw.githubusercontent.com/CristianChris/e-commerce-course-project/master/screenshots/add_to_cart.png)
+![Cart feature](https://raw.githubusercontent.com/CristianChris/e-commerce-course-project/master/screenshots/remove_to_cart.png)
 
 
 #### Payment
@@ -426,9 +444,14 @@ Cart.update({ owner: user._id }, { $set: { items: [], total: 0 }}, function(err,
 ```
 Additionaly, we inserted in the ```./views/main/cart.ejs``` view the html logic for the front-side, which can be found on the official website of stripe.
 
+![Payment feature](https://raw.githubusercontent.com/CristianChris/e-commerce-course-project/master/screenshots/pay_1.png)
+![Payment feature](https://raw.githubusercontent.com/CristianChris/e-commerce-course-project/master/screenshots/pay_2.png)
+![Payment feature](https://raw.githubusercontent.com/CristianChris/e-commerce-course-project/master/screenshots/pay_3.png)
+![Payment feature](https://raw.githubusercontent.com/CristianChris/e-commerce-course-project/master/screenshots/pay_4.png)
+
 #### History page
 
-![History page](https://github.com/mdanny/e-commerce-course-project/blob/master/images/Screen%20Shot%202016-04-07%20at%2012.20.59%20AM.png)
+![history feature](https://raw.githubusercontent.com/CristianChris/e-commerce-course-project/master/screenshots/history.png)
 
 
 ## Facebook login
@@ -466,6 +489,10 @@ The authentication mechanism facebook uses implies specifying two routes:
 ```
 
 The second one is similar to the redirect URI specified in the oAuth protocol which redirects the user to the corresponding views, based on whether it has been authenticated or not.
+
+![fb_oauth](https://raw.githubusercontent.com/CristianChris/e-commerce-course-project/master/screenshots/fb_1.png)
+![fb_oauth](https://raw.githubusercontent.com/CristianChris/e-commerce-course-project/master/screenshots/fb_2.png)
+![fb_oauth](https://raw.githubusercontent.com/CristianChris/e-commerce-course-project/master/screenshots/fb_3.png)
 
 
 [//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
