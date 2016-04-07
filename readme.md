@@ -1,5 +1,6 @@
 
 Here is a diagram of how our app is deployed:
+
 ![deploye](https://raw.githubusercontent.com/CristianChris/e-commerce-course-project/master/screenshots/node_diagram.png)
 
 Demo page url:
@@ -10,7 +11,7 @@ IP Address: http://46.101.103.101:3000
 * web server: (proxy)
 IP Address: http://46.101.165.140
 
-# Ecommerce website project
+# Ecommerce website project description
 
 This project is using the following technology stack:
 
@@ -602,4 +603,4 @@ A **package.json** file contains meta data about your app or module. Most import
 
 
 
-### We would like to thank Arash Yahya for his course on Udemy that guided this small project
+#### We would like to thank Arash Yahya for his course on Udemy that guided this small project
