@@ -59,6 +59,7 @@ In order to run our web application you will need to do several steps:
 ![node](https://raw.githubusercontent.com/CristianChris/e-commerce-course-project/master/screenshots/node.png)
 9. open this URL [http://localhost:3000](http://localhost:3000) from the browser
 ![home](https://raw.githubusercontent.com/CristianChris/e-commerce-course-project/master/screenshots/home.png)
+
 ## User Authentication 
 ---
 
