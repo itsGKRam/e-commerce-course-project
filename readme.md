@@ -1,4 +1,4 @@
-app server: 
+app server:
 IP Address: 46.101.103.101:3000
 
 web server: (proxy)
@@ -36,6 +36,7 @@ This project resembles an ecommerce website with full features such as user auth
 3. [Products and Category functionality](#products-and-category-functionality)
 4. [Cart and payment feature](#cart-and-payment-feature)
 5. [Facebook login](#facebook-login)
+6. [Extra](#Extra)
 
 ## Installation
 ---
@@ -61,7 +62,7 @@ In order to run our web application you will need to do several steps:
 
 #### User Schema
 For user authentication we have used *morgan* library with the aim of logging the user requests to the webserver (e.g. access to different routes).
-For the User Schema we use mongoose, which is an *Object Relational Mapper*, which is like a virtual object database, that can be used within the node itself. Basically it connects our Node.js project with MongoDB database, without the need to implicitly connect them using additional code.
+For the User Schema we use mongoose, which is an *Object Relational Mapper*, which is like a virtual object database, that can be used within Node itself. Basically it connects our Node.js project with MongoDB database, without the need to implicitly connect them using additional code.
 
 The User Schema is defined as follows:
 ```javascript
@@ -91,20 +92,148 @@ From the Schema we can derive that the User entity is described by five characte
 In the next chapter we will explain how these characteristics are implemented and used.
 
 #### MongoDB
-Configure Database with MongoLab
+
+Our MongoDB database is a single-node deployment, hosted on ```https://mlab.com```. Here is a useful representation of our database.
+
+|     Name    |                                                                                                                                                                           Description                                                                                                                                                                           |   Value   |
+|:-----------:|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:---------:|
+| collections | Number of collections in this database                                                                                                                                                                                                                                                                                                                          | 9         |
+| objects     | Number of documents in this database                                                                                                                                                                                                                                                                                                                            | 307       |
+| indexes     | Number of indexes in this database                                                                                                                                                                                                                                                                                                                              | 10        |
+| numExtents  | Number of filesystem extents allocated for this database                                                                                                                                                                                                                                                                                                        | 13        |
+| avgObjSize  | Average document size for this database. This is the dataSize divided by the objects.                                                                                                                                                                                                                                                                           | 0.30 KB   |
+| dataSize    | Total size of all documents stored in this database, including the padding factor (does not include indexes).                                                                                                                                                                                                                                                   | 93.33 KB  |
+| storageSize | Total amount of space allocated for data for this database (does not include index storage). This number is larger than dataSize because it includes additional space (preallocation within data files as well as space left by deleted or moved documents).                                                                                                    | 392.00 KB |
+|             |                                                                                                                                                                                                                                                                                                                                                                 |           |
+| indexSize   | Total size of all indexes created on this database                                                                                                                                                                                                                                                                                                              | 95.81 KB  |
+| fileSize    | Total size of storage files used for this database. This represents the overall storage footprint for this database on disk. For servers running with the smallfiles option (we use this option on our Shared plans), the first file allocated is 16MB, the second 32MB, the third 64MB... until 512MB is reached at which point each subsequent file is 512MB. | 16.00 MB  |
+
+
+Our database is comprised of the following collections:
+
+* carts
+* categories
+* products
+* sessions
+* users
+
+Each collection contains relevant documents, for instance ```carts``` collection contains cart for each of the registerde user. The document schema of ```cart``` model is defined below:
+
+```javascript
+
+{
+    "_id": {
+        "$oid": "cartHashString"
+    },
+    "owner": {
+        "$oid": "userHashString"
+    },
+    "items": [],
+    "total": 0,
+    "__v": 0
+}
+```
 
 #### Usage of EJS
-Sed vitae nisl mauris. Mauris at enim laoreet risus faucibus aliquet. Vestibulum varius lorem et felis bibendum, sit amet convallis arcu vulputate. Praesent eget odio eget odio ultricies euismod. Ut non justo viverra, placerat tortor ac, sollicitudin lacus. Mauris at semper neque, nec porta dui. Aenean metus ligula, euismod ac sapien non, pulvinar suscipit justo. Cras sit amet eros finibus, laoreet est quis, ultricies ante. Fusce lacinia lacinia purus non egestas. Aliquam at urna nisi. Etiam vitae scelerisque quam.
-#### Adding Twitter Bootstrap
-Aenean tempus neque non neque suscipit fermentum. Nullam lacus metus, scelerisque eu leo id, tristique aliquet velit. Donec purus diam, scelerisque eu ullamcorper vestibulum, eleifend id nisi. Duis nec egestas nibh. Praesent lobortis ut magna vitae dignissim. Nunc felis arcu, interdum a interdum aliquam, viverra eget ligula. Donec tempus rutrum sem, sit amet laoreet dui rhoncus et. In hac habitasse platea dictumst. Ut porta sed quam sit amet efficitur. Cras nec neque nisi. Phasellus vitae sagittis lorem. Nulla orci lorem, maximus ut sagittis id, venenatis et metus. Curabitur condimentum venenatis dolor, quis cursus tellus efficitur sit amet. Sed id facilisis justo. Fusce finibus est nec sem blandit, quis sollicitudin arcu tristique.
 
+
+Let’s take a look at how we can use EJS to include repeatable parts of our site (partials) and pass data to our views.
+
+We have to set EJS as the view engine for our Express application using:
+
+```app.set('view engine', 'ejs');```
+
+Notice how we send a view to the user by using ```res.render()```. It is important to note that ```res.render()``` will look in a views folder for the view.
+
+
+#### Adding Twitter Bootstrap
+
+Bootstrap is a frontend framework that provides the necessary CSS and Javascript to make your websites responsive and nice looking. A clear advantage of using Bootstrap is that it accelerates web development process by letting you focus on building the application’s functionality instead of tinkering with (hopefully) cross-browser load of styling rules and media.
+
+In our web application we downloaded Bootstrap CSS/JS and serve it from the application’s public folder.
+
+The general idea in order to serve Bootstrap from the web application instead of using CDN is to first download Bootstrap CSS, icon fonts and JS files, place them somewhere in the application’s “public” folder – the one that will be visible from the internet – and reference them in the view templates.
 
 #### Signup and Login
-Vivamus euismod ipsum et pretium posuere. Ut imperdiet pulvinar massa, vitae ultrices magna pretium quis. Phasellus lacinia pellentesque est, eget varius tortor mattis at. Nullam fringilla ipsum pulvinar lacus tempus, eu sollicitudin sapien posuere. Aenean massa massa, ullamcorper a rutrum eu, consequat et enim. Vivamus orci diam, sodales at ex in, tempus vulputate mauris. Fusce finibus dui quam, a eleifend ipsum ornare id. Nullam tincidunt ornare ex.
+
+* The library we use is passport.js
+* If we want to use passport library in one of our routes, which is login, we need to configure it first
+* We can think of it as setting up a new rule in a config file, so that login route will use it (middleware)
+
+* We require two libraries in the passport file:
+  1. passport - for authentication
+  2. Localstrategy - it is one of passport's libraries, used for the local login
+
+* There are three sections in this file:
+ 1. Serialization/deserialization and user objects
+ 2. Middleware that will process the login mechanism
+ 3. Custom function to validate if a user is logged in or not
+
+**Serialization** is the process of translating data structures or object states into a format that can be stored. We want to translate the data structure, which is the ```user``` object and we want to translate it into a format that can be stored. Thus, we will store it in connect-mongo. So, the key of this object is provided into the 2nd argument of the callback function in ```serializeUser```, which is ```user._id```. Serialize function will be saved into session and it is used to retrieve the whole object via deserialize function.
+
+**Serialize function** means that data from the user object should be stored in the session. In our case, we want to store the id only and the result of the ```serializeUser()``` method will be attached to the session as request with user._id --> req.user._id. Later on, if we want to access a user that we just logged in, we will type ```req.user```.
+
+In **deserialize function** we provide as first argument the same key of user object that was given to done func in ```serializeUser()``` call. So, the whole object is retrieved with the help of the key.
+
+
+#### In ```routers/user.js``` we added two routes:
+```
+1. router.get(‘/login’)
+
+2. router.post(‘/login’)
+```
+* We are using the middleware we created, namely ```local-login``` in passport and then we pass in an object to this second parameter, successRedirect to profile url, or if failure, than redirect to /login url
+
+#### In ```server.js```
+
+* We have to initialize the passport and also we need to add passport.session
+* Passport.session acts as a middleware to alter the req object and change the user value that is currently the session id from the client cookie, into the deserialize user object
+
+As a consequence, we have login  and profile routes.
+
+* In ```server.js``` when we add the following line:
+```javascript
+app.use(function(req, res, next) {
+    res.locals.user = req.user;
+    next();
+});
+```
+* The user object will get available for all the routes
+* This is instead of specifying manually (redundantly) in every needed route, an user object, like ```user: req.user```
+* Every route will have the user object by default
+* ```res.locals.user``` - we want to make it equal to req.user, because once logged in we will have req.user based on serialize and deserialize method
+* The ```req.logIn``` from the user.js file, in the router.post ```(‘/signup’)``` route, is essentially adding the session to the server and the cookie to the browser by using the login function
+* The user object ```obj``` is based on the result of the new user creation which we created here: ```User.findOne({email: req.body,email…```
+* The user as a saved object, is then passed to the login function, so the user will have the cookie on the browser and the session on the server
 
 
 #### Cookie and Session usage
-Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Suspendisse potenti. Donec diam quam, pretium quis rutrum et, pharetra ut ligula. Donec ut sem sapien. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam porttitor, felis at viverra vulputate, tortor dui dictum tortor, quis iaculis purus enim cursus massa. Morbi dui neque, semper ut mauris in, feugiat sodales neque. Donec et ex justo. Fusce id felis et mauris iaculis ullamcorper. Vestibulum sagittis auctor ante, ac aliquet libero rhoncus vel. Pellentesque at eros sit amet enim sollicitudin aliquet. Nunc eget venenatis metus. Vivamus non enim et dolor pretium egestas vitae id nulla. Quisque vel nisi est.
+
+The session stores data like ```user-id``` in temporary memory store (temp, local, redis, or in our case mongodb).
+The cookie parser will parse the cookie header and handle cookie separation and encoding, take the session data, encrypt it and send it to browser.
+
+Few steps are required to set up the cookie and session functionality:
+
+* install db for storing the session (library connect-mongo)
+* mongo store library is depending on express-sesion, without express-session (session) it won’t work
+* instead of saving anything to a temporary memory store, we want to save the session into MongoDB database
+* every session will be saved into DB, which is MongoDB
+* MongoStore in our case specifically stores the session on the server-side
+
+####Gravatar functionality
+
+* When the user clicks or is redirected to its profile page, an avatar called gravatar should be displayed
+* It is made by creating a custom method inside the user model file, called ```UserSchema.methods.gravatar```
+* This method checks the existance of the size of the avatar and the existance of the user’s email
+* If the user doesn’t have the email for any reason, a default gravatar is provided
+* Otherwise, a unique gravatar is created for each user profile based on the md5digest of the user’s email
+
+####Edit-profile
+
+* the user types in the req.body.name, or the request to be changed, and according to the name of the body, the user.profile data structure is being modified accordingly
+* then simply the user data is saved and flash the message, and store the flash in the session
+* so that it can be used in other routes that have success as the name of the flash as is the route ```router.get(‘/edit-profile’)``` which contains the actual render of the edit-profile.ejs file
+* redirect user back to edit-profile page
 
 
 
@@ -112,62 +241,231 @@ Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia
 ---
 
 #### Product and Category models
-Proin at enim eget felis dapibus aliquam quis vitae tortor. Morbi dapibus tellus nisl, vitae tincidunt tellus eleifend vitae. Suspendisse blandit ex a ultricies lacinia. Nulla varius posuere erat, non scelerisque magna vulputate vitae. Cras mi nunc, maximus vel facilisis ac, mattis a augue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sodales nisl eros. Morbi rutrum rhoncus fermentum. Nunc at odio justo. Donec consectetur dui vitae diam fermentum vestibulum.
+
+* The product model:
+```javascript
+var ProductSchema = new Schema({
+  category: { type: Schema.Types.ObjectId, ref: 'Category'},
+  name: String,
+  description: String,
+  price: Number,
+  image: String
+});
+```
+
+* The category model
+```javascript
+var CategorySchema = new Schema({
+  name: { type: String, unique: true, lowercase: true}
+});
+```
 
 
 #### The Admin route
-Cras aliquam mi sapien, vitae sollicitudin est convallis sed. Sed a purus odio. Quisque non dolor ante. Suspendisse euismod consequat finibus. Praesent ac sem suscipit, aliquet metus sit amet, luctus augue. Aenean in ultricies purus, id aliquet dolor. Ut risus massa, finibus in ex vel, varius tristique felis. Aenean imperdiet ornare magna, a volutpat dolor aliquam sit amet. Proin vitae tincidunt libero, a aliquet diam. Aenean tempor tincidunt leo sed auctor. Maecenas leo dolor, elementum id dolor eget, maximus porttitor ante.
+
+Now, the routes for adding product category are located in ```admin.js```, because this is the responsibility of only an admin
+
+* ```admin/add-category``` route will get a page from the server with an extra data which is message
+* We have also a post route and it is relying on Category Schema because we instantiate a new object from the category
+* we want to save the data in the category name field so that it is equal to the input of the request and afterwards save the respective data to the database
+
+We have created the corresponding ```add-category.ejs``` for the above route.
+
+We've also added a security layer, so that only ```admin``` account can access the page of ```add-category```
 
 
 #### Async waterfall model
-In interdum enim convallis eleifend consectetur. Nunc id mi nibh. Nullam sit amet leo porta, scelerisque dolor vitae, lacinia ex. Aenean dictum justo dictum, consequat dolor a, fermentum orci. Donec non tellus vestibulum, venenatis urna at, pellentesque lectus. Ut id fringilla elit. Suspendisse egestas tortor augue. Aenean auctor condimentum augue in commodo. Donec auctor dignissim nunc ut ultricies. Phasellus at nisi nibh. Nunc consequat mi ac sagittis ullamcorper. Fusce erat ante, ultrices porta laoreet ut, dignissim a tortor. Curabitur non ante et augue ultrices aliquam vitae non arcu. Sed consequat gravida sem, quis ultricies dolor sagittis vel.
+
+This is a js module, which runs an array of functions in series, each passing their results to the next in the array. However, if any of the functions pass an error to the callback, the next function is not executed and the main callback is immediately called with the error.
+
+*Installation*
+
+* Just include async-waterfall before your scripts.
+* npm install async-waterfall if you’re using node.js.
+
+*Usage*
+
+* waterfall(tasks, optionalCallback);
+* tasks - An array of functions to run, each function is passed a callback(err, result1, result2, ...) it must call on completion. The first argument is an error (which can be null) and any further arguments will be passed as arguments in order to the next task.
+* optionalCallback - An optional callback to run once all the functions have completed. This will be passed the results of the last task's callback.
+
+```javascript
+
+var waterfall = require('async-waterfall');
+waterfall(tasks, callback);
+
+waterfall([
+  function(callback){
+    callback(null, 'one', 'two');
+  },
+  function(arg1, arg2, callback){
+    callback(null, 'three');
+  },
+  function(arg1, callback){
+    // arg1 now equals 'three'
+    callback(null, 'done');
+  }
+], function (err, result) {
+  // result now equals 'done'
+});
+```
 
 
 #### Faker API usage
-Duis dictum pulvinar quam. Ut et fermentum ante. Ut laoreet sem id pulvinar mollis. Cras non felis eget metus tempus semper non ut tellus. Duis venenatis lectus ut est fringilla dictum. Mauris egestas, lacus ac sagittis vestibulum, diam sapien semper est, at interdum ex orci id turpis. Suspendisse pulvinar eros eu velit ullamcorper mattis et et odio. Pellentesque ut urna ac lorem egestas venenatis. In laoreet suscipit vestibulum. Sed aliquet vitae leo egestas interdum. Aliquam sit amet lorem tincidunt dolor ultricies elementum. Suspendisse potenti. Aenean libero urna, elementum vehicula consequat nec, accumsan eu neque. Nulla a mauris vestibulum, lobortis ligula blandit, feugiat turpis. Proin facilisis erat in libero blandit, vulputate aliquet purus blandit.
 
+You can use faker from within your browser or on the server with Node. In our case, we present the usage of faker api in node:
+
+```javascript
+ var faker = require('faker');
+
+ //some basic faker methods
+ var name = faker.name.findName();
+ var randomEmail = faker.internet.email();
+ ```
+
+ Let’s say we wanted to create a product on the fly. We want this product to have a category, name, description, price and even an image.
+
+In Node, all we would have to do is:
+
+```javascript
+
+var product = new Product();
+        product.category  = category._id;
+        product.name = faker.commerce.productName();
+        product.description = faker.lorem.paragraph();
+        product.price = faker.commerce.price();
+        product.image = faker.image.image();
+
+        product.save();
+```
+Notice that we create the product object by assigning to the product variable an instance of Product(), which is defined in the ```Product``` model. Consequently, we use the ```faker``` api to use the corresponding methods for generating fake data.
+
+Just like that, we have a whole product object that we can use within our application! The above code will yield:
+
+```javascript
+{
+    "_id": {
+        "$oid": fakerProductHashString
+    },
+    "image": fakerHostedImage,
+    "price": fakerPrice,
+    "description": fakerDescription,
+    "category": {
+        "$oid": fakerCategoryHashString
+    },
+    "__v": mongoDBVersionRevisionKey
+}
+
+```
 
 #### Elastic Search
-Phasellus vel sapien et eros bibendum varius. Mauris porta elementum justo. Quisque convallis egestas gravida. Morbi a fringilla lorem. Nulla faucibus nisl ac ex efficitur feugiat. Suspendisse velit ipsum, placerat eu nibh in, eleifend iaculis nisl. Nulla tincidunt tempor ornare. Phasellus placerat augue a egestas eleifend. Fusce quis eros pulvinar, placerat mauris eu, tempor mauris.
+
+Install elastic search as follows:
+
+* brew install elasticsearch
+* not as sudo, otherwise you get a java runtime error
+
+Add plugin to our product schema:
+
+* mongoosastic ~ a library which uses elasticsearch to replicate the data from mongoDB to elasticsearch
+* it lets you search specific data using mongoosastic feature, w/o writing additional code to connect mongoosastic and mongodb
+* all within elastic search product set
+* logic defined in Product.search and Product.createMapping
+
+The mapping code maps between product DB and elasticSearch, so that it creates a “bridge” between ES replica set and Product DB. Finally we want to stream the whole data from the product to ES, so that it will replicate all data and put in ES.
 
 
 
 ## Cart and payment feature
 ---
 #### Cart Schema
-Maecenas ut leo magna. Vivamus vulputate massa nec leo finibus lacinia. Interdum et malesuada fames ac ante ipsum primis in faucibus. Curabitur iaculis risus nec nisi aliquam, id consectetur justo pellentesque. Maecenas ac dui tellus. Aliquam eget vehicula augue. Proin nec bibendum leo, sed varius nunc. Curabitur vitae risus sit amet dolor vulputate lacinia. Integer ultrices ligula sem, ut malesuada dui porta vitae. Nulla tempus, nisl sit amet iaculis commodo, tellus magna ullamcorper nisi, nec interdum enim est eget nisl. Praesent lobortis urna nulla, a tincidunt nisl rutrum in.
+
+```javascript
+var CartSchema = new Schema({
+  owner: { type: Schema.Types.ObjectId, ref: 'User'},
+  total: { type: Number, default: 0},
+  items: [{
+    item: { type: Schema.Types.ObjectId, ref: 'Product'},
+    quantity: { type: Number, default: 1},
+    price: { type: Number, default: 1},
+  }]
+});
+```
 
 
 #### Cart Middleware
-Nullam quis nunc lacus. Donec eget diam ut risus facilisis fermentum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Ut pellentesque magna odio, ac scelerisque arcu rutrum non. Morbi consectetur rhoncus turpis, non mollis nunc ultricies cursus. Quisque feugiat lobortis diam consequat rutrum. Praesent sit amet enim sed eros facilisis viverra eu nec massa. Praesent non elementum leo, quis pretium orci. Nam ut felis eu est pellentesque viverra.
 
+The cart middleware is defined in ```./middlewares/middleware.js``` and embeds the whole logic of the cart inside the ```module.exports``` function. The function has a key check:
+```javascript
+if (req.user)
+```
+which checks if the user is authenticated and if positive, it finds the corresponding cart of the assigned owner by querying MongoDB using ```findOne()``` method. An important aspect here is the logic behind the total items variable generation, which is exported as a global variable using the following command, so that it becomes accessible in all the routes:
+```javascript
+//logic
+res.locals.cart = total;
+```
 
 #### Cart features
-Aenean a ante sit amet libero luctus feugiat nec ac magna. Mauris at mi erat. Phasellus finibus at purus et efficitur. Aliquam et luctus arcu. Nunc ornare blandit neque vel auctor. Nulla lectus augue, consequat ac nulla quis, lacinia varius urna. Vivamus eu vestibulum turpis. Praesent interdum semper justo ac maximus. Nulla quis lacus in quam lobortis sagittis.
+The cart displays the products which have been added to it and consequently, they appear as div frames, following the specification within the ```./views/main/cart.ejs``` view. Each item to be bought may be removed by the user and also may be bought. There is also a frame which links with the payment gateway which is **stripe** in our case.
+
+![Cart feature](https://github.com/mdanny/e-commerce-course-project/blob/master/images/Screen%20Shot%202016-04-06%20at%2011.58.35%20PM.png)
 
 
 #### Payment
-Donec porttitor ante porta leo feugiat vestibulum. Etiam sit amet velit faucibus, sagittis nunc tincidunt, fermentum dolor. Integer tristique varius mi vitae maximus. Morbi viverra lobortis tellus, in sagittis nisi viverra et. Praesent blandit sapien ultrices consequat vestibulum. Morbi in dapibus mi, vitae porta quam. Aenean et turpis in orci pharetra facilisis.
 
+For the payment process we use ```Stripe``` as the payment gateway. For embeding the gateway in our node application, we add a route in the ```./routes/main.js``` file inserting all the logic of the payment in the ```router.post('/payment')```.
+
+Within this route, the ```stripeToken``` is extracted from the req.body, comprising the inserted sensitive payment data and the token is assigned to a customer (user) and then the payment data matches asynchronously the currently active user cart and its owner, the respective user and furhter updates all the necessary information in the database collection by querying the update MongoDB method:
+
+```javascript
+Cart.update({ owner: user._id }, { $set: { items: [], total: 0 }}, function(err, updated){
+          if(updated) {
+            res.redirect('/profile');
+          }
+        });
+```
+Additionaly, we inserted in the ```./views/main/cart.ejs``` view the html logic for the front-side, which can be found on the official website of stripe.
 
 #### History page
-Nullam laoreet euismod diam molestie egestas. Proin interdum semper congue. Nulla lobortis tincidunt dolor nec placerat. Integer tristique metus nunc, in varius nibh auctor sed. Vestibulum eu faucibus nisi, quis porta massa. Nam aliquet sapien ac tellus maximus efficitur. Etiam nec sapien nec orci aliquet condimentum. Integer aliquet odio nulla, et congue massa feugiat nec. Phasellus finibus tincidunt tincidunt.
+
+![History page](https://github.com/mdanny/e-commerce-course-project/blob/master/images/Screen%20Shot%202016-04-07%20at%2012.20.59%20AM.png)
 
 
 ## Facebook login
 ---
 
 #### Facebook developer settings
-In consectetur tincidunt sodales. Nunc metus nisl, auctor sed convallis tincidunt, porta eu diam. Nullam eget ligula felis. Nunc arcu libero, posuere eu viverra eget, rhoncus aliquet lacus. Vestibulum pulvinar neque sem, vitae facilisis orci egestas et. Phasellus vestibulum leo sit amet neque blandit volutpat. Praesent fringilla nisi gravida, aliquam diam vel, lacinia orci. Nullam a purus mattis, iaculis neque sed, imperdiet nunc. Nullam sagittis arcu non egestas eleifend. Nullam vel facilisis massa. Donec pulvinar metus eu mauris finibus bibendum. Nunc vulputate molestie bibendum. Quisque congue mi sed consectetur ullamcorper.
+
+In order to configure our application, to use facebook authentication, we had to register the application on ```developers.facebook.com```. We followed the steps specified on their official website:
+
+https://developers.facebook.com/docs/apps/register
 
 
 #### Config on Node.js side
-Etiam eleifend ante porta elementum cursus. Integer eu nunc elementum velit luctus aliquet non quis velit. Vivamus auctor venenatis posuere. Morbi bibendum odio dui, vitae blandit lectus tincidunt ut. Duis turpis sapien, dignissim eu nisl at, convallis mollis diam. Aliquam a dolor bibendum, ornare nulla a, accumsan metus. Vestibulum non dui ut arcu aliquam commodo sit amet id erat.
+
+In ```./config/secret.js``` we have added a facebook object which includes the following information:
+* clientID
+* clientSecret
+* profileFields
+* callbackURL
 
 
 #### Adding Middleware
-Duis tincidunt tempor orci, quis ultrices mi gravida accumsan. Sed euismod tortor at auctor venenatis. Quisque interdum elit id ante porta sagittis sed ac lectus. Ut ornare, diam eu finibus dignissim, erat magna feugiat libero, aliquam aliquam ante lacus in quam. Nulla non justo porta, dapibus nisl at, maximus orci. Nunc congue tortor et nisi vehicula pretium. Duis id magna fermentum, interdum justo varius, viverra lorem.
 
+Inside the ```./config/passport.js``` file we added a ```FacebookStrategy``` middleware. It defines the logic for the facebook authentication mechanism.
+
+Notice that we adhere the middleware defined in the ```passport.js``` to the facebook route defined in the ```./routes/user.js``` file. There, we call the ```authenticate()``` method of the passport library passing as the first argument the ```facebook``` object we created in ```secret.js```.
+
+The authentication mechanism facebook uses implies specifying two routes:
+```javascript
+1.  router.get('/auth/facebook', passport.authenticate('facebook', {scope: 'email'}));
+2.  router.get('/auth/facebook/callback', passport.authenticate('facebook', {
+  successRedirect: '/profile',
+  failureRedirect: '/login'
+}))
+```
+
+The second one is similar to the redirect URI specified in the oAuth protocol which redirects the user to the corresponding views, based on whether it has been authenticated or not.
 
 
 [//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
@@ -194,171 +492,8 @@ Duis tincidunt tempor orci, quis ultrices mi gravida accumsan. Sed euismod torto
    [PlGd]: <https://github.com/joemccann/dillinger/tree/master/plugins/googledrive/README.md>
    [PlOd]: <https://github.com/joemccann/dillinger/tree/master/plugins/onedrive/README.md>
 
-#Under construction....
-
-##Saving users session:
-
-The session stores data like ```user-id``` in temporary memory store, temp, local, mongodb or redis.
-The cookie parser will parse the cookie header and handle cookie separation and encoding, take the session data, encrypt it and send it to browser.
-
-* install db for storing the session (library connect-mongo)
-* mongo store library is depending on express-sesion, without express-session (session) it won’t work)
-* instead of saving anything to a temporary memory store, we want to save the session into MongoDB database
-* every session will be saved into DB, which is MongoDB
-* MongoStore in our case specifically stores the session on the server-side 
- 
-##Now, on the authentication library part:
-
-* The library we will use is passport.js
-* If we want to use passport library in one of our routes, which is login, we need to configure it first
-* We can think of it as setting up a new rule in a config file, so that login route will use it (middleware)
-* We require two libraries in the passport file:
-* passport - for authentication
-* Localstrategy - it is simply one of passport's libraries, for the sake of local login
-* There are three sections in this file:
-* Serialize/deserialize and user objects
-* Middleware that will process the login mechanism
-* Custom function to validate if a user is logged in or not
-
-**Serialization** is the process of translating data structures or object states into a format that can be stored. We want to translate the data structure, which is user object and we want to translate it into a format that can be stored. Thus, we will store it in connect-mongo. So, the key of this object is provided into the 2nd argument of the callback function in serializeUser, which is user._id. Serialize function will be saved into session and it is used to retrieve the whole object via deserialize function.
-
-**Serialize function** means that data from the user object should be stored in the session. In our case, we want to store the id only and the result of the serializeUser method will be attached to the session as request with user._id --> req.user._id. Later on, if we want to access a user that we just logged in, we will type req.user. 
-
-In **deserialize** function we provide as first argument of deserialize function the same key of user object that was given to done func in serializeUser call. So, the whole object is retrieved with the help of the key. 
-
-* First, we want to give middleware a name, so it can be recognized, later on in another route, which is local-login
-* Create a new anonymous instance of LocalStrategy object
-* Then pass it the required fields (LocalStrategy user name and password, we override also email instead of name and also add passReqToCallback)
-* Also add an anonymous function and then we want to validate it, pass the req, email, password and callback
-* in the anonymous function, we want to find in our DB if the user is found by the matching email
-* When we return the last callback, it returns the user object
-* later on we can request ```req.user_id```
-* req.user.profile.name
-* in every request, this object (user) will be stored in a session, so it can be used in any page that requires you to log in
-
-* Lastly - the validation function that checks if the user is authenticated, if not redirects to login page
-
-###Now, in ```routers/user.js``` we added two routes:
-
-* ```router.get(‘/login’)```
-* ```router.post(‘/login’)```
-* we are using the middleware we created, namely local-login in passport and then we pass in an object to this second parameter, successRedirect to profile url, or if failure, than redirect to /login url
-
-###In ```server.js```
-
-* We have to initialize the passport and also we need to add passport.session
-* Passport.session acts as a middleware to alter the req object and change the user value that is currently the session id from the client cookie, into the true deserialize user object
-
-
-###Now, we have login route, and profile
-
-* In ```server.js``` when we add the following line:
-```javascript
-app.use(function(req, res, next) {
-    res.locals.user = req.user;
-    next();
-});
-```
-* the user object will get available for all the routes 
-* this is instead of specifying manually (redundantly) in every needed route, an user object, like: 
-* ```user: req.user```
-* every route will have the user object by default
-* ```res.locals.user``` , ```locals = local``` variable and user is the object we want to use and we want to make it equal to req.user, because once logged in you will have req.user based on serialize and deserialize method
-
-* The req.login from the user.js file, in the router.post ```(‘/signup’)``` route, is essentially adding the session to the server and the cookie to the browser by using the login function
-* the user object obj is based on the result of the new user creation which we created here: User.findOne({email: req.body,email…
-* the user, save object, is then passed to the login function, so the user will have the session and cookie on the browser and the session on the server
-
-##Gravatar functionality
-
-* when user clicks/or is redirected onto its profile page, an avatar called gravatar should be displayed
-* it is made by creating a custom method inside the user model file, called gravatar
-* it checks the size of the avatar, and the existance of the user’s email
-* if the user doesn’t have email for some reason, a default gravatar is provided
-* otherwise, a unique gravatar is created for each user profile based on the md5digest of the user’s email
-
-##Edit-profile
-
-* the user types in the req.body.name, or the request to be changed, and according to the name of the body, the user.profile data structure is being modified accordingly
-* then simply the user data is saved and flash the message, and store the flash in the session 
-* so that it can be used in other routes that have success as the name of the flash as is the route ```router.get(‘/edit-profile’)``` which contains the actual render of the edit-profile.ejs file
-* redirect user back to edit-profile page
-
-##Laying down new models:
-
-* category.js 
-* create a new Schema, called Category
-* this will be a model for category part 
-* we want to separate between the category and a product just in case that a category model grows bigger (hundreds), you don’t want to put in in the product schema
-* next module product
-* a reason why we reference the product based on category ID is so that later on we can populate the data inside the category schema
-
-
-Now, we are going to create routes for adding product category, and it will be under admin.js, because this is the responsibility of only an admin
-* ```admin/add-category``` route will get a page from the server with an extra data which is message
-* next, is a post route and it is relying on Category Schema because we instantiate a new object from the category
-* next we want to save the data in the category name field and it will be equal to input
-* save data to DB
-
-Create ```.ejs``` for the specific route
-
-We will add a security layer, so that only admin account can access the page of add-category!
-
-* now we will add another middleware to our express app, so that it learns how to use a new variable which is categories, because we want to render the categories on the nav-bar
-* first in the app.use (category) middleware specified in server.js
-* first we want to find all the categories ```(find({}))```, search through every document in DB
-* if err return callback with err
-* store the list of categories in a local var called categories
-
-##USE a new library ~ Async
-
-* handles asynchronous code
-* we use waterfall models, where a function depends on another chain function
-
-
-Create our first API, so we can store all product data in the database in api.js
-* we want to search for the name of the cateogry, which exists in the DB
-
-
-###In main.js
-* in route ```/products/:id``` - a parameter like a double dot is used if we want to get to a specific url
-* so instead of adding ```router.get(‘/products/foods_id’)```, ```router.get(‘/products/gadgets_id’)```, ```router.get(‘/products/books_id’)``` we just add the ```:``` parameter
-* ```req.params```, so it could be accessed in dependance of the id of the category
-* ```req.params.id```, is the way to access the parameter in the routes (:id)
-* ```populate``` - we can only use populate if the data type is an object id (Schema.Types,ObjectId)
-* populate shows not only the id but also the information about the category
-* exec executes the anonymous function on all of the above methods, e.g. on all the .find methods
-
-
-###Productspage.ejs
-
-* created another rout in main, to display a single page for the specified product, based on the id of the product
-
-
-##Search feature
-
-* install elastic search
-* brew install elasticsearch
-* not as sudo, or java runtime error
-
-###Add plugin to our product schema:
-* mongoosastic ~ a library which uses elasticsearch to replicate the data from mongoDB to elasticsearch
-* so you can search specific data using mongoosastic feature, w/o writing additional code to connect mongoosastic and mongodb
-* all within elastic search product set
-* so, we can later on use Product.search
-* or Product.createMapping
-
-###the mapping code is to:
-* map between product DB and elasticS, so that it creates a “bridge” between ES replica set and Product DB
-
-###Next we want to stream the whole data from the product to ES
-* it will replicate all data and put in ES
-* three methods event-driven
-
-
-###Next we are creating a route where we will search for products;
-* ```router.post(‘/search’)``` pass the req.body.q alongside with the request
-
+## Extra
+---
 Npm is the node package manager and you will need to install the following modules using it:
 
 ```javascript
@@ -394,51 +529,42 @@ A **package.json** file contains meta data about your app or module. Most import
 ├── config
 ├── models
 ├── node_modules
-│   ├── async
-│   ├── connect-mongo
-│   ├── cookie
-│   ├── cookie-parser
-│   ├── cookie-signature
-│   ├── ejs
-│   ├── ejs-mate
-│   ├── elasticsearch
-│   ├── express
-│   │   ├── lib
-│   ├── express-flash
-│   │   └── lib
-│   ├── express-session
-│   │   └── session
-│   ├── faker
-│   ├── mongodb
-│   │   └── lib
-│   ├── mongoosastic
-│   │   ├── example
-│   ├── mongoose
-│   │   ├── examples
-│   │   ├── lib
-│   ├── morgan
-│   │   └── node_modules
-│   ├── passport
-│   │   └── lib
+│   ├── async
+│   ├── connect-mongo
+│   ├── cookie
+│   ├── cookie-parser
+│   ├── cookie-signature
+│   ├── ejs
+│   ├── ejs-mate
+│   ├── elasticsearch
+│   ├── express
+│   │   ├── lib
+│   ├── express-flash
+│   │   └── lib
+│   ├── express-session
+│   │   └── session
+│   ├── faker
+│   ├── mongodb
+│   │   └── lib
+│   ├── mongoosastic
+│   │   ├── example
+│   ├── mongoose
+│   │   ├── examples
+│   │   ├── lib
+│   ├── morgan
+│   │   └── node_modules
+│   ├── passport
+│   │   └── lib
 ├── public
-│   ├── css
-│   └── js
+│   ├── css
+│   └── js
 ├── routes
 └── views
-    ├── accounts
-    ├── admin
-    ├── main
-    └── partials
+    ├── accounts
+    ├── admin
+    ├── main
+    └── partials
 ```
-
-
-
-
-
-
-
-
-
 
 
 
